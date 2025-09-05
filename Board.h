@@ -16,14 +16,14 @@ class Board {
             }
         }
         // placing all the rooks
-        board[0][0] = new Rook('R',true, 0, 0);
-        board[0][7] = new Rook('R',true, 0, 7);
-        board[7][0] = new Rook('R',false, 7, 0);
-        board[7][7] = new Rook('R',false, 7, 7);
-        board[0][2] = new Bishop('B', true, 0, 2);
-        board[0][2] = new Bishop('B', true, 0, 5);
-        board[0][2] = new Bishop('B', false, 7, 2);
-        board[0][2] = new Bishop('B', false, 7, 5);
+        board[0][0] = new Rook(true, 0, 0);
+        board[0][7] = new Rook(true, 0, 7);
+        board[7][0] = new Rook(false, 7, 0);
+        board[7][7] = new Rook(false, 7, 7);
+        board[0][2] = new Bishop(true, 0, 2);
+        board[0][5] = new Bishop(true, 0, 5);
+        board[7][2] = new Bishop(false, 7, 2);
+        board[7][5] = new Bishop(false, 7, 5);
     }
 
     ~Board() {
@@ -33,22 +33,33 @@ class Board {
             }
         }
     }
-    void displayBoard(){
-        // char displayBoard[8][8];
-        for(int i=0; i<8; i++){
-            for(int j=0; j<8; j++){
-                if(board[i][j] != nullptr){
-                    if(board[i][j]->getIsWhite()) cout<<'W';
-                    else cout<<'B';
-                    cout<<board[i][j]->getSymbol();
-                }
-                else{
-                    cout<<'.';
-                }
+    #include <iostream>
+
+void displayBoard() {
+    // Print column labels
+    std::cout << "  A B C D E F G H" << std::endl;
+    std::cout << " +-----------------+" << std::endl;
+
+    for (int i = 0; i < 8; i++) {
+        // Print row label (8 down to 1)
+        std::cout << 8 - i << "|";
+
+        for (int j = 0; j < 8; j++) {
+            // Check if a piece exists at the current position
+            if (board[i][j] != nullptr) {
+                // Get the symbol from the piece object
+                std::cout << board[i][j]->getSymbol() << " ";
+            } else {
+                // If the square is empty, print a placeholder
+                std::cout << ". ";
             }
-            cout<<"\n";
         }
+        // Print row label again for easy viewing
+        std::cout << "| " << 8 - i << std::endl;
     }
+    std::cout << " +-----------------+" << std::endl;
+    std::cout << "  A B C D E F G H" << std::endl;
+}
     bool makeMove(int startx, int starty, int endx, int endy){
         if(startx<0 || startx>7 || starty<0 || starty>7 || endx<0 || endx>7 || endy<0 || endy>7){
             cout<<"Invalid Coordinates, please try again"<<"\n";
