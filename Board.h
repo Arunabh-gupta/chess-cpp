@@ -3,6 +3,9 @@
 
 #include "Rook.h"
 #include "Bishop.h"
+#include "Queen.h"
+#include "Knight.h"
+#include "King.h"
 #include <iostream>
 using namespace std;
 
@@ -28,6 +31,21 @@ class Board {
         board[0][5] = new Bishop(true, 0, 5);
         board[7][2] = new Bishop(false, 7, 2);
         board[7][5] = new Bishop(false, 7, 5);
+
+        // placing the queens
+        board[0][3] = new Queen(true, 0, 3);
+        board[7][3] = new Queen(false, 7, 3);
+        
+        // placing the kings
+        board[0][4] = new King(true, 0, 4);
+        board[7][4] = new King(false, 7, 4);
+
+        // placing the knights
+        board[0][1] = new Knight(true, 0, 1);
+        board[0][6] = new Knight(true, 0, 6);
+        board[7][1] = new Knight(false, 7, 1);
+        board[7][6] = new Knight(false, 7, 6);
+
     }
 
     ~Board() {
@@ -94,7 +112,7 @@ bool makeMove(int startx, int starty, int endx, int endy, bool turn){
 };
 
 bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece* piece){
-    if(dynamic_cast<const Rook*>(piece)){
+    if(dynamic_cast<const Rook*>(piece) || dynamic_cast<const Queen*>(piece)){
         if(startx == endx){
             int start = min(starty, endy)+1;
             int end = min(starty, endy);
@@ -115,7 +133,7 @@ bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece*
             }
         }
     }
-    else if(dynamic_cast<const Bishop*>(piece)){
+    else if(dynamic_cast<const Bishop*>(piece) || dynamic_cast<const Queen*>(piece)){
         
         int dx = endx > startx ? 1 : -1;
         int dy = endy > starty ? 1 : -1;
@@ -127,6 +145,9 @@ bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece*
             currx += dx;
             curry += dy;
         }
+    }
+    else if(dynamic_cast<const Knight*>(piece)){
+        if(board[endx][endy] != nullptr) return false;
     }
 
     return true;
