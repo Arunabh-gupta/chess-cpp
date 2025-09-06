@@ -13,6 +13,9 @@ class Piece{
     // canMove checks if it's a legal move for this piece or not
     virtual bool canMove(int startx, int starty, int endx, int endy) = 0;
     virtual char getSymbol() = 0;
+    bool getIsWhite(){
+        return is_white;
+    }
     protected:
     pair<int, int> position_;
     bool is_white;

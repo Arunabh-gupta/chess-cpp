@@ -64,7 +64,7 @@ void displayBoard() {
     std::cout << "  A B C D E F G H" << std::endl;
 }
     
-bool makeMove(int startx, int starty, int endx, int endy){
+bool makeMove(int startx, int starty, int endx, int endy, bool turn){
         if(startx<0 || startx>7 || starty<0 || starty>7 || endx<0 || endx>7 || endy<0 || endy>7){
             cout<<"Invalid Coordinates, please try again"<<"\n";
             return false; 
@@ -74,12 +74,19 @@ bool makeMove(int startx, int starty, int endx, int endy){
             cout<<"Empty square was selected, try some other square"<<"\n";
             return false;
         }
+        if(turn != piece->getIsWhite()){
+            cout<<"It's "<<(turn ? "White's" : "Black's")<<" move"<<endl;
+            return false;
+        }
         if(!piece->canMove(startx, starty, endx, endy)){
             cout<<"Current piece cannot move at the destination"<<"\n";
             return false;
         }
 
-        
+        if(!isPathClear(startx, starty, endx, endy, piece)){
+            cout<<"That's an illegal move"<<endl;
+            return false;
+        }
         board[endx][endy] = piece;
         board[startx][starty] = nullptr;
         return true;
@@ -87,7 +94,7 @@ bool makeMove(int startx, int starty, int endx, int endy){
 };
 
 bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece* piece){
-    if(!dynamic_cast<const Rook*>(piece)){
+    if(dynamic_cast<const Rook*>(piece)){
         if(startx == endx){
             int start = min(starty, endy)+1;
             int end = min(starty, endy);
@@ -108,7 +115,7 @@ bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece*
             }
         }
     }
-    else if(!dynamic_cast<const Bishop*>(piece)){
+    else if(dynamic_cast<const Bishop*>(piece)){
         
         int dx = endx > startx ? 1 : -1;
         int dy = endy > starty ? 1 : -1;
