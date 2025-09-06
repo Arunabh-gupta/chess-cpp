@@ -7,6 +7,8 @@
 using namespace std;
 
 class Board {
+    private: 
+    bool isPathClear(int startx, int starty, int endx, int endy, const Piece* piece);
     public:
     Piece* board[8][8];
     Board(){
@@ -20,6 +22,8 @@ class Board {
         board[0][7] = new Rook(true, 0, 7);
         board[7][0] = new Rook(false, 7, 0);
         board[7][7] = new Rook(false, 7, 7);
+
+        // placing the bishops
         board[0][2] = new Bishop(true, 0, 2);
         board[0][5] = new Bishop(true, 0, 5);
         board[7][2] = new Bishop(false, 7, 2);
@@ -33,7 +37,6 @@ class Board {
             }
         }
     }
-    #include <iostream>
 
 void displayBoard() {
     // Print column labels
@@ -60,7 +63,8 @@ void displayBoard() {
     std::cout << " +-----------------+" << std::endl;
     std::cout << "  A B C D E F G H" << std::endl;
 }
-    bool makeMove(int startx, int starty, int endx, int endy){
+    
+bool makeMove(int startx, int starty, int endx, int endy){
         if(startx<0 || startx>7 || starty<0 || starty>7 || endx<0 || endx>7 || endy<0 || endy>7){
             cout<<"Invalid Coordinates, please try again"<<"\n";
             return false; 
@@ -75,6 +79,15 @@ void displayBoard() {
             return false;
         }
 
+        
+        board[endx][endy] = piece;
+        board[startx][starty] = nullptr;
+        return true;
+    }
+};
+
+bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece* piece){
+    if(!dynamic_cast<const Rook*>(piece)){
         if(startx == endx){
             int start = min(starty, endy)+1;
             int end = min(starty, endy);
@@ -94,11 +107,21 @@ void displayBoard() {
                 }
             }
         }
-
-        board[endx][endy] = piece;
-        board[startx][starty] = nullptr;
-        return true;
     }
-};
+    else if(!dynamic_cast<const Bishop*>(piece)){
+        
+        int dx = endx > startx ? 1 : -1;
+        int dy = endy > starty ? 1 : -1;
 
+        int currx = startx+dx;
+        int curry = starty+dy;
+        while(currx != endx && curry != endy){
+            if(board[currx][curry] != nullptr) return false;
+            currx += dx;
+            curry += dy;
+        }
+    }
+
+    return true;
+}
 #endif
