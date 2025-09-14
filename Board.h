@@ -6,6 +6,7 @@
 #include "Queen.h"
 #include "Knight.h"
 #include "King.h"
+#include "Pawn.h"
 #include <iostream>
 using namespace std;
 
@@ -46,6 +47,16 @@ class Board {
         board[7][1] = new Knight(false, 7, 1);
         board[7][6] = new Knight(false, 7, 6);
 
+
+        //placing white pawns
+        for(int i=0; i<8; i++){
+            board[1][i] = new Pawn(true, i, 1);
+        }
+        //placing black pawns
+        for(int i=0; i<8; i++){
+            board[6][i] = new Pawn(false, i, 6);
+        }
+
     }
 
     ~Board() {
@@ -63,7 +74,7 @@ void displayBoard() {
 
     for (int i = 0; i < 8; i++) {
         // Print row label (8 down to 1)
-        std::cout << 8 - i << "|";
+        std::cout << i+1 << "|";
 
         for (int j = 0; j < 8; j++) {
             // Check if a piece exists at the current position
@@ -76,18 +87,19 @@ void displayBoard() {
             }
         }
         // Print row label again for easy viewing
-        std::cout << "| " << 8 - i << std::endl;
+        std::cout << "| " << i+1 << std::endl;
     }
     std::cout << " +-----------------+" << std::endl;
     std::cout << "  A B C D E F G H" << std::endl;
 }
     
 bool makeMove(int startx, int starty, int endx, int endy, bool turn){
+        cout<<"startx: "<<startx<<", starty: "<<starty<<" ,endx: "<<endx<<" ,endy: "<<endy<<endl;
         if(startx<0 || startx>7 || starty<0 || starty>7 || endx<0 || endx>7 || endy<0 || endy>7){
             cout<<"Invalid Coordinates, please try again"<<"\n";
             return false; 
         }
-        Piece* piece = board[startx][starty];
+        Piece* piece = board[starty][startx];
         if(piece == nullptr){
             cout<<"Empty square was selected, try some other square"<<"\n";
             return false;
@@ -105,8 +117,8 @@ bool makeMove(int startx, int starty, int endx, int endy, bool turn){
             cout<<"That's an illegal move"<<endl;
             return false;
         }
-        board[endx][endy] = piece;
-        board[startx][starty] = nullptr;
+        board[endy][endx] = piece;
+        board[starty][startx] = nullptr;
         return true;
     }
 };
@@ -147,7 +159,11 @@ bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece*
         }
     }
     else if(dynamic_cast<const Knight*>(piece)){
-        if(board[endx][endy] != nullptr) return false;
+        if(board[endy][endx] != nullptr) return false;
+    }
+    else if(dynamic_cast<const Pawn*>(piece)){
+        
+        if(board[endy][endx] != nullptr) return false;
     }
 
     return true;
