@@ -162,7 +162,12 @@ bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece*
         if(board[endy][endx] != nullptr) return false;
     }
     else if(dynamic_cast<const Pawn*>(piece)){
-        
+        if(starty == 6 && endy == 4){
+            if(board[endy+1][endx] != nullptr) return false;
+        }
+        if(starty == 1 && endy == 3){
+            if(board[endy-1][endx] != nullptr) return false;
+        }
         if(board[endy][endx] != nullptr) return false;
     }
 

@@ -26,13 +26,10 @@ int main(){
         int start_row = (moveInput[1] - '0' - 1);
         int end_col = std::tolower(moveInput[4]) - 'a';
         int end_row = (moveInput[5] - '0' - 1);
-        if(!board->makeMove(start_col, start_row, end_col, end_row, current_turn_is_white)){
-            cout<<"That's an illegal move. Please try again"<<endl;
-        }
-        else{
+        if(board->makeMove(start_col, start_row, end_col, end_row, current_turn_is_white)){
             cout<<"Move successfull"<<endl;
             current_turn_is_white = !current_turn_is_white;    
-        }   
+        }
         board->displayBoard();
     }
 
