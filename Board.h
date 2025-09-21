@@ -10,14 +10,19 @@
 #include <iostream>
 using namespace std;
 
-class Board {
-    private: 
-    bool isPathClear(int startx, int starty, int endx, int endy, const Piece* piece);
-    public:
-    Piece* board[8][8];
-    Board(){
-        for(int i=0; i<8; i++){
-            for(int j=0; j<8; j++){
+class Board
+{
+private:
+    bool isPathClear(int startx, int starty, int endx, int endy, const Piece *piece);
+
+public:
+    Piece *board[8][8];
+    Board()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
                 board[i][j] = nullptr;
             }
         }
@@ -36,7 +41,7 @@ class Board {
         // placing the queens
         board[0][3] = new Queen(true, 0, 3);
         board[7][3] = new Queen(false, 7, 3);
-        
+
         // placing the kings
         board[0][4] = new King(true, 0, 4);
         board[7][4] = new King(false, 7, 4);
@@ -47,75 +52,102 @@ class Board {
         board[7][1] = new Knight(false, 7, 1);
         board[7][6] = new Knight(false, 7, 6);
 
-
-        //placing white pawns
-        for(int i=0; i<8; i++){
-            board[1][i] = new Pawn(true, i, 1);
-        }
-        //placing black pawns
-        for(int i=0; i<8; i++){
-            board[6][i] = new Pawn(false, i, 6);
-        }
-
+        // // placing white pawns
+        // for (int i = 0; i < 8; i++)
+        // {
+        //     board[1][i] = new Pawn(true, i, 1);
+        // }
+        // // placing black pawns
+        // for (int i = 0; i < 8; i++)
+        // {
+        //     board[6][i] = new Pawn(false, i, 6);
+        // }
     }
 
-    ~Board() {
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
+    ~Board()
+    {
+        for (int i = 0; i < 8; ++i)
+        {
+            for (int j = 0; j < 8; ++j)
+            {
                 delete board[i][j];
             }
         }
     }
 
-void displayBoard() {
-    // Print column labels
-    std::cout << "  A B C D E F G H" << std::endl;
-    std::cout << " +-----------------+" << std::endl;
+    void displayBoard()
+    {
+        // Print column labels
+        std::cout << "  A B C D E F G H" << std::endl;
+        std::cout << " +-----------------+" << std::endl;
 
-    for (int i = 0; i < 8; i++) {
-        // Print row label (8 down to 1)
-        std::cout << i+1 << "|";
+        for (int i = 0; i < 8; i++)
+        {
+            // Print row label (8 down to 1)
+            std::cout << i + 1 << "|";
 
-        for (int j = 0; j < 8; j++) {
-            // Check if a piece exists at the current position
-            if (board[i][j] != nullptr) {
-                // Get the symbol from the piece object
-                std::cout << board[i][j]->getSymbol() << " ";
-            } else {
-                // If the square is empty, print a placeholder
-                std::cout << ". ";
+            for (int j = 0; j < 8; j++)
+            {
+                // Check if a piece exists at the current position
+                if (board[i][j] != nullptr)
+                {
+                    // Get the symbol from the piece object
+                    std::cout << board[i][j]->getSymbol() << " ";
+                }
+                else
+                {
+                    // If the square is empty, print a placeholder
+                    std::cout << ". ";
+                }
             }
+            // Print row label again for easy viewing
+            std::cout << "| " << i + 1 << std::endl;
         }
-        // Print row label again for easy viewing
-        std::cout << "| " << i+1 << std::endl;
+        std::cout << " +-----------------+" << std::endl;
+        std::cout << "  A B C D E F G H" << std::endl;
     }
-    std::cout << " +-----------------+" << std::endl;
-    std::cout << "  A B C D E F G H" << std::endl;
-}
-    
-bool makeMove(int startx, int starty, int endx, int endy, bool turn){
-        cout<<"startx: "<<startx<<", starty: "<<starty<<" ,endx: "<<endx<<" ,endy: "<<endy<<endl;
-        if(startx<0 || startx>7 || starty<0 || starty>7 || endx<0 || endx>7 || endy<0 || endy>7){
-            cout<<"Invalid Coordinates, please try again"<<"\n";
-            return false; 
-        }
-        Piece* piece = board[starty][startx];
-        if(piece == nullptr){
-            cout<<"Empty square was selected, try some other square"<<"\n";
+
+    bool makeMove(int startx, int starty, int endx, int endy, bool turn)
+    {
+        cout << "startx: " << startx << ", starty: " << starty << " ,endx: " << endx << " ,endy: " << endy << endl;
+        if (startx < 0 || startx > 7 || starty < 0 || starty > 7 || endx < 0 || endx > 7 || endy < 0 || endy > 7)
+        {
+            cout << "Invalid Coordinates, please try again" << "\n";
             return false;
         }
-        if(turn != piece->getIsWhite()){
-            cout<<"It's "<<(turn ? "White's" : "Black's")<<" move"<<endl;
+        Piece *piece = board[starty][startx];
+        if (piece == nullptr)
+        {
+            cout << "Empty square was selected, try some other square" << "\n";
             return false;
         }
-        if(!piece->canMove(startx, starty, endx, endy)){
-            cout<<"Current piece cannot move at the destination"<<"\n";
+        if (turn != piece->getIsWhite())
+        {
+            cout << "It's " << (turn ? "White's" : "Black's") << " move" << endl;
+            return false;
+        }
+        if (!piece->canMove(startx, starty, endx, endy))
+        {
+            cout << "Current piece cannot move at the destination" << "\n";
             return false;
         }
 
-        if(!isPathClear(startx, starty, endx, endy, piece)){
-            cout<<"That's an illegal move"<<endl;
+        if (!isPathClear(startx, starty, endx, endy, piece))
+        {
+            cout << "That's an illegal move, path not clear" << endl;
             return false;
+        }
+
+        Piece *destinationPiece = board[endy][endx];
+        if (destinationPiece != nullptr && destinationPiece->getIsWhite() == piece->getIsWhite())
+        {
+            cout << "That's an illegal move, friendly piece on destination" << endl;
+            return false;
+        }
+        if (destinationPiece != nullptr)
+        {
+            cout << piece->getSymbol() << " takes "<< destinationPiece->getSymbol()<<"\n";
+            delete destinationPiece;
         }
         board[endy][endx] = piece;
         board[starty][startx] = nullptr;
@@ -123,53 +155,80 @@ bool makeMove(int startx, int starty, int endx, int endy, bool turn){
     }
 };
 
-bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece* piece){
-    if(dynamic_cast<const Rook*>(piece) || dynamic_cast<const Queen*>(piece)){
-        if(startx == endx){
-            int start = min(starty, endy)+1;
-            int end = min(starty, endy);
-            for(int i=start; i<=end; i++){
-                if(board[startx][i] != nullptr){
-                    cout<<"Path is blocked"<<"\n";
+bool Board::isPathClear(int startx, int starty, int endx, int endy, const Piece *piece)
+{
+    if (dynamic_cast<const Rook *>(piece) || dynamic_cast<const Queen *>(piece))
+    {
+        if (startx == endx)
+        {
+            int start = min(starty, endy) + 1;
+            int end = max(starty, endy);
+            for (int i = start; i < end; i++)
+            {
+                if (board[i][startx] != nullptr)
+                {
+                    printf("check log 1 \n");
                     return false;
                 }
             }
-        }else{
-            int start = min(startx, endx)+1;
-            int end = min(startx, endx);
-            for(int i=start; i<=end; i++){
-                if(board[i][starty] != nullptr){
-                    cout<<"Path is blocked"<<"\n";
+        }
+        else if(starty == endy)
+        {
+            int start = min(startx, endx) + 1;
+            int end = max(startx, endx);
+            for (int i = start; i <= end; i++)
+            {
+                if (board[starty][i] != nullptr)
+                {
+                    printf("check log 2 \n");
                     return false;
                 }
             }
         }
     }
-    else if(dynamic_cast<const Bishop*>(piece) || dynamic_cast<const Queen*>(piece)){
-        
+    else if (dynamic_cast<const Bishop *>(piece) || dynamic_cast<const Queen *>(piece))
+    {
+
         int dx = endx > startx ? 1 : -1;
         int dy = endy > starty ? 1 : -1;
 
-        int currx = startx+dx;
-        int curry = starty+dy;
-        while(currx != endx && curry != endy){
-            if(board[currx][curry] != nullptr) return false;
+        int currx = startx + dx;
+        int curry = starty + dy;
+        while (abs(currx - endx) == 1 && abs(curry - endy) == 1)
+        {
+            if (board[curry][currx] != nullptr){
+                printf("check log 3 \n");
+                return false;
+            }
             currx += dx;
             curry += dy;
         }
     }
-    else if(dynamic_cast<const Knight*>(piece)){
-        if(board[endy][endx] != nullptr) return false;
-    }
-    else if(dynamic_cast<const Pawn*>(piece)){
-        if(starty == 6 && endy == 4){
-            if(board[endy+1][endx] != nullptr) return false;
-        }
-        if(starty == 1 && endy == 3){
-            if(board[endy-1][endx] != nullptr) return false;
-        }
-        if(board[endy][endx] != nullptr) return false;
-    }
+    // else if(dynamic_cast<const Knight*>(piece)){
+    //     if(board[endy][endx] != nullptr) return false;
+    // }
+    // else if (dynamic_cast<const Pawn *>(piece))
+    // {
+    //     int direction = piece->getIsWhite() ? -1 : 1;
+    //     int deltaX = endx - startx;
+    //     int deltaY = abs(endy - starty);
+
+    //     // Forward move
+    //     if (deltaY == 0)
+    //     {
+    //         if (deltaX == direction)
+    //             return true; // Single step
+    //         if (!has_moved_ && deltaX == 2 * direction)
+    //             return true; // Two-step
+    //     }
+    //     // Capturing move
+    //     else if (deltaY == 1 && deltaX == direction)
+    //     {
+    //         return true;
+    //     }
+
+    //     return false;
+    // }
 
     return true;
 }
